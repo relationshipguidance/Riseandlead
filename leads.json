@@ -1,0 +1,40 @@
+[
+  {
+    "timestamp": "2026-09-14T15:15:22",
+    "name": "test",
+    "email": "test@test.com",
+    "phone": "1234567890",
+    "target_role": "sr manager",
+    "score": 59,
+    "level": "Preparation Required",
+    "answers": {
+      "role_clarity": "2",
+      "leadership_story": "1",
+      "business_impact": "2",
+      "executive_presence": "3",
+      "difficult_questions": "4",
+      "strategic_thinking": "2",
+      "role_transition": "3",
+      "closing": "2"
+    }
+  },
+  {
+    "timestamp": "2026-09-14T15:52:19",
+    "name": "test",
+    "email": "test@t.com",
+    "phone": "1234567890",
+    "target_role": "s m",
+    "score": 69,
+    "level": "Developing Interview Readiness",
+    "answers": {
+      "role_clarity": "1",
+      "leadership_story": "1",
+      "business_impact": "2",
+      "executive_presence": "3",
+      "difficult_questions": "4",
+      "strategic_thinking": "3",
+      "role_transition": "4",
+      "closing": "4"
+    }
+  }
+]

@@ -1,0 +1,179 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interview Readiness Assessment | Rise&Lead</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<header class="site-header">
+    <div class="nav-wrap">
+        <a href="/" class="brand">
+            <span class="brand-name">RISE<span>&</span>LEAD</span>
+            <span class="brand-sub">MENTORSHIP FOR SENIOR PROFESSIONALS</span>
+        </a>
+
+        <nav>
+            <a href="/" class="nav-cta">Back to Rise&Lead</a>
+        </nav>
+    </div>
+</header>
+
+
+<main>
+
+<section class="assessment-hero">
+    <div class="container">
+        <div class="eyebrow">INTERVIEW READINESS ASSESSMENT</div>
+
+        <h1 class="assessment-title">
+            How ready are you for your
+            <em>next important interview?</em>
+        </h1>
+
+        <p class="hero-lead">
+            Answer honestly. This is not a test of your experience. It's
+            a test of how effectively that experience is likely to come
+            across in a high-stakes room.
+        </p>
+    </div>
+</section>
+
+
+<section class="assessment-form-section">
+    <div class="container">
+        <form id="assessmentForm" class="assessment-form">
+
+            {% for key, question, options in questions %}
+            <div class="question-card">
+                <div class="question-head">
+                    <span class="question-number">{{ "%02d"|format(loop.index) }}</span>
+                    <h2>{{ question }}</h2>
+                </div>
+
+                <div class="options">
+                    {% for option in options %}
+                    <label class="option">
+                        <input
+                            type="radio"
+                            name="{{ key }}"
+                            value="{{ loop.index }}"
+                            required
+                        >
+                        <span class="option-mark"></span>
+                        <span class="option-text">{{ option }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+
+
+            <div class="lead-box">
+                <div class="eyebrow light">GET YOUR RESULT</div>
+                <h2>Where do you stand?</h2>
+                <p>
+                    Enter your details to receive your readiness score
+                    and the areas to focus on before the interview.
+                </p>
+
+                <div class="lead-fields">
+                    <input name="name" placeholder="Full name" required>
+                    <input name="phone" placeholder="Phone number" required>
+                    <input name="email" type="email" placeholder="Email address" required>
+                    <input name="target_role" placeholder="Role you are interviewing for">
+                </div>
+
+                <button class="primary-btn" type="submit">
+                    <span>Get My Readiness Score</span>
+                    <span>&#8594;</span>
+                </button>
+            </div>
+
+        </form>
+
+
+        <div id="result" class="result-card hidden"></div>
+    </div>
+</section>
+
+</main>
+
+
+<footer>
+    <div class="container footer-inner">
+        <div>
+            <strong>RISE<span>&amp;</span>LEAD</strong>
+            <span>Mentorship for Senior Professionals</span>
+        </div>
+        <div>Saurav Bhardwaja &#183; Founder</div>
+    </div>
+</footer>
+
+
+<script src="{{ url_for('static', filename='main.js') }}" defer></script>
+
+<script>
+const form = document.getElementById("assessmentForm");
+const result = document.getElementById("result");
+
+form.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(form);
+    const answers = {};
+
+    {% for key, question, options in questions %}
+    answers["{{ key }}"] = formData.get("{{ key }}");
+    {% endfor %}
+
+    const payload = {
+        name: formData.get("name"),
+        phone: formData.get("phone"),
+        email: formData.get("email"),
+        target_role: formData.get("target_role"),
+        answers: answers
+    };
+
+    const response = await fetch("/api/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    form.classList.add("hidden");
+    result.classList.remove("hidden");
+
+    result.innerHTML = `
+        <div class="eyebrow">YOUR RESULT</div>
+        <div class="score">${data.score}<span>/100</span></div>
+        <h2>${data.level}</h2>
+        <p>${data.message}</p>
+        <a class="primary-btn"
+           href="https://cal.id/riseandlead/partnership-call"
+           target="_blank">
+            <span>Discuss Your Strategy</span>
+            <span>&#8594;</span>
+        </a>
+        <p class="micro">
+            A focused conversation to identify what should be
+            strengthened before the interview.
+        </p>
+    `;
+
+    window.scrollTo({
+        top: result.offsetTop - 60,
+        behavior: "smooth"
+    });
+});
+</script>
+
+</body>
+</html>
